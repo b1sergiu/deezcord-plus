@@ -1,4 +1,4 @@
-# Deezcord Plus
+# Deezcord Plus [![Build Status](https://travis-ci.com/b1sergiu/deezcord-plus.svg?branch=master)](https://travis-ci.com/b1sergiu/deezcord-plus)
 Show what you're listening to on Discord. This is a fork of [Deezcord by CodeMyst](https://github.com/CodeMyst/deezcord).
 
 *Note: Because of the Deezer API it can only display the last song in your history, not the currently playing one.*
