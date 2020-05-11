@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net;
+using System.Net.Security;
 using System.Threading.Tasks;
 using DiscordRPC;
 
@@ -7,6 +9,7 @@ namespace Deezcord
     public class Program
     {
         static DiscordRpcClient client = new DiscordRpcClient(APIKeys.DiscordApplicationId);
+        public static long currentlyPlaying;
         private static void Main()
         {
             Console.WriteLine("Deezcord Plus - https://github.com/b1sergiu/deezcord-plus/");
@@ -32,8 +35,12 @@ namespace Deezcord
             while (true)
             {
                 Track track = await DeezerAPI.LastTrack();
-                UpdatePresence(track);
-                Console.WriteLine($"Currently playing: {track.Title} by {track.Artist.Name} - {track.Album.Title}");
+                if (currentlyPlaying != track.Id)
+                {
+                    UpdatePresence(track);
+                    Console.WriteLine($"Currently playing: {track.Title} by {track.Artist.Name} - {track.Album.Title}");
+                    currentlyPlaying = track.Id;
+                }
                 await Task.Delay(30000);
             }
         }

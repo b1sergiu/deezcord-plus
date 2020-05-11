@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
 using Newtonsoft.Json;
+using System.Net.Http;
 
 namespace Deezcord
 {
@@ -19,12 +20,12 @@ namespace Deezcord
         private const string userEndpoint = "https://api.deezer.com/user/me";
         private const string tokenPath = "token.txt";
 
-        private static string token;
+        public static string token;
 
         public static async Task Authenticate()
         {
             Console.WriteLine ($"Redirect URI: {redirectUri}");
-            
+
             HttpListener http = new HttpListener();
             http.Prefixes.Add(redirectUri);
             Console.WriteLine ("Listening...");
@@ -96,10 +97,10 @@ namespace Deezcord
 
             try
             {
-                WebResponse tokenResponse = await tokenRequest.GetResponseAsync ();
-                using (StreamReader reader = new StreamReader(tokenResponse.GetResponseStream () ?? throw new Exception ()))
+                WebResponse tokenResponse = await tokenRequest.GetResponseAsync();
+                using (StreamReader reader = new StreamReader(tokenResponse.GetResponseStream() ?? throw new Exception()))
                 {
-                    string responseText = await reader.ReadToEndAsync ();
+                    string responseText = await reader.ReadToEndAsync();
 
                     token = responseText.Split('&')[0].Remove(0, 13);
 
@@ -114,10 +115,10 @@ namespace Deezcord
                 if (e.Response is HttpWebResponse r)
                 {
                     Console.WriteLine ($"HTTP: {response.StatusCode}");
-                    using (StreamReader reader = new StreamReader (r.GetResponseStream () ?? throw new Exception ()))
+                    using (StreamReader reader = new StreamReader(r.GetResponseStream() ?? throw new Exception()))
                     {
                         string responseText = await reader.ReadToEndAsync();
-                        Console.WriteLine (responseText);
+                        Console.WriteLine(responseText);
                     }
                 }
             }
@@ -126,6 +127,7 @@ namespace Deezcord
         public static async Task<Track> LastTrack()
         {
             string requestUri = $"{lastTrackEndpoint}?access_token={token}";
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
 
             HttpWebRequest userinfoRequest = (HttpWebRequest)WebRequest.Create(requestUri);
             userinfoRequest.Method = "GET";
@@ -139,12 +141,12 @@ namespace Deezcord
 
                 if (userinfoResponseText.Contains ("Invalid OAuth access token."))
                 {
+                    Console.WriteLine("Invalid OAuth access token.");
                     await Authenticate();
                     return await LastTrack();
                 }
 
                 History tracks = JsonConvert.DeserializeObject<History> (userinfoResponseText);
-
                 return tracks.Tracks [0];
             }
         }
@@ -166,6 +168,7 @@ namespace Deezcord
 
                 if (userinfoResponseText.Contains ("Invalid OAuth access token."))
                 {
+                    Console.WriteLine("Invalid OAuth access token.");
                     await Authenticate();
                     return await User();
                 }
