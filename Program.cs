@@ -12,7 +12,7 @@ namespace Deezcord
         public static long currentlyPlaying;
         private static void Main()
         {
-            Console.WriteLine("Deezcord Plus - https://github.com/b1sergiu/deezcord-plus/");
+            //Console.WriteLine("Deezcord Plus - https://github.com/b1sergiu/deezcord-plus/");
             MainAsync().GetAwaiter().GetResult();
         }
 
